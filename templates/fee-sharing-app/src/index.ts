@@ -19,4 +19,4 @@
  * - SOLANA_RPC_URL        Helius or other Solana RPC endpoint
  */
 
-export { bags, createFeeShareConfig, getQuote, getClaimablePositions } from "./bags-client";
+export { bags, createFeeShareConfig, getQuote, getClaimablePositions, getLifetimeFees, socialLookup } from "./bags-client";

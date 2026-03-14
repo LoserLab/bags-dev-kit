@@ -87,7 +87,14 @@ export async function prepareLaunch(config: LaunchConfig) {
 
 /**
  * Check if Dexscreener token info is available for a launched token.
+ * Uses raw fetch since this endpoint is not in the SDK.
  */
-export async function setupDexscreener(tokenMint: string) {
-  return bags.dexscreener.checkOrderAvailability(tokenMint);
+export async function checkDexscreenerAvailability(tokenMint: string) {
+  const res = await fetch(
+    `https://public-api-v2.bags.fm/api/v1/solana/dexscreener/order-availability?tokenAddress=${tokenMint}`,
+    { headers: { "x-api-key": process.env.BAGS_API_KEY! } }
+  );
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || "Dexscreener check failed");
+  return data.response;
 }

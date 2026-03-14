@@ -14,7 +14,7 @@
  * - SOLANA_RPC_URL        Helius or other Solana RPC endpoint
  */
 
-import { swap, getRecentLaunches, wallet, WSOL } from "./bags-client.js";
+import { swap, getRecentLaunches, wallet, WSOL } from "./bags-client";
 
 const POLL_INTERVAL_MS = 10_000; // 10 seconds
 const SEEN_MINTS = new Set<string>();

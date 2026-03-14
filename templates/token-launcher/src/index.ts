@@ -20,5 +20,5 @@
  * - PLATFORM_FEE_BPS            Platform fee in basis points (e.g., 3000 = 30%)
  */
 
-export { bags, prepareLaunch, setupDexscreener } from "./bags-client";
+export { bags, prepareLaunch, checkDexscreenerAvailability } from "./bags-client";
 export type { LaunchConfig } from "./bags-client";

@@ -69,7 +69,18 @@ export async function getLifetimeFees(tokenMint: string) {
 
 /**
  * Look up a wallet address by social media handle.
+ * Uses raw fetch since this endpoint is not in the SDK.
  */
 export async function socialLookup(provider: string, username: string) {
-  return bags.state.getLaunchWalletV2(username, provider);
+  const params = new URLSearchParams({
+    username: username.replace(/^@/, ""),
+    provider: provider.toLowerCase(),
+  });
+  const res = await fetch(
+    `https://public-api-v2.bags.fm/api/v1/token-launch/fee-share/wallet/v2?${params}`,
+    { headers: { "x-api-key": process.env.BAGS_API_KEY! } }
+  );
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || "Social lookup failed");
+  return data.response;
 }

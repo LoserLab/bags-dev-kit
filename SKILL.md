@@ -52,9 +52,9 @@ API keys are free. Get one at https://dev.bags.fm (max 10 per account).
 | Explore tokens, pools, feeds | `/bags-dev-kit:explore` | None (scripts handle it) |
 | Launch a token | `/bags-dev-kit:launch` | `references/fee-economics.md`, `references/security.md` |
 | Analyze token performance / fees | `/bags-dev-kit:analyze` | `references/fee-economics.md` |
-| Write code using Bags API/SDK | Read `references/bags-api.md` | `references/bags-api.md` |
-| Security review of Bags code | Read `references/security.md` | `references/security.md` |
-| Optimize fee share config | Read `references/fee-economics.md` | `references/fee-economics.md` |
+| Write code using Bags API/SDK | (no command; load reference) | `references/bags-api.md` |
+| Security review of Bags code | (no command; load reference) | `references/security.md` |
+| Optimize fee share config | (no command; load reference) | `references/fee-economics.md` |
 
 ---
 
@@ -96,7 +96,7 @@ API Base URL:     https://public-api-v2.bags.fm/api/v1
 Auth Header:      x-api-key: <key>
 Rate Limit:       1,000 requests/hour
 WSOL Mint:        So11111111111111111111111111111111111111112
-Bags Global LUT:  BaGSdevkitConstant (see references/bags-api.md for full list)
+Bags Global LUT:  Use BAGS_GLOBAL_LUT constant from @bagsfm/bags-sdk
 ```
 
 ---
@@ -123,4 +123,4 @@ When scaffolding, copy from `templates/` in the skill directory and customize. T
 | `trading-bot` | Automated trading with Jito MEV protection | Node.js + Bags SDK + Helius |
 | `token-launcher` | Platform for launching tokens with fee configs | Next.js + Bags SDK + Privy + Meteora |
 
-Each template includes a working `bags-client.ts` with typed API methods, environment variable setup, and README with deployment instructions.
+Each template includes a working `bags-client.ts` with typed API methods and environment variable setup via `.env.example`.

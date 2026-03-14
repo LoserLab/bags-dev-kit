@@ -47,7 +47,9 @@ async function main() {
   const inputMint = resolveMint(inputRaw);
   const outputMint = resolveMint(outputRaw);
 
-  // Convert human amount to lamports/smallest unit (assume 9 decimals for SOL, 6 for tokens)
+  // Convert human amount to smallest unit
+  // SOL uses 9 decimals; most SPL tokens use 6 but some use 9 or other values
+  // For accurate conversion, check the token's actual decimals on-chain
   const decimals = inputMint === WSOL ? 9 : 6;
   const amount = Math.floor(parseFloat(amountStr) * 10 ** decimals).toString();
 
@@ -88,4 +90,7 @@ async function main() {
   }, null, 2));
 }
 
-main();
+main().catch((err) => {
+  console.error("Error:", err instanceof Error ? err.message : err);
+  process.exit(1);
+});

@@ -49,8 +49,8 @@ async function main() {
 
   const positions = data.response;
 
-  // Calculate totals
-  let totalClaimableLamports = 0;
+  // Calculate totals (use BigInt for lamport precision)
+  let totalClaimableLamports = BigInt(0);
   const summary: Array<{
     tokenMint: string;
     type: string;
@@ -58,24 +58,29 @@ async function main() {
     claimableLamports: string;
   }> = [];
 
-  if (positions && typeof positions === "object") {
-    for (const [key, pos] of Object.entries(positions as Record<string, any>)) {
-      if (pos && pos.claimableLamports) {
-        const lamports = parseInt(pos.claimableLamports);
-        totalClaimableLamports += lamports;
-        summary.push({
-          tokenMint: pos.tokenMint || key,
-          type: pos.type || "unknown",
-          claimable: lamports / 1e9,
-          claimableLamports: pos.claimableLamports,
-        });
-      }
+  // Handle both array and object response shapes
+  const entries = Array.isArray(positions)
+    ? positions.map((pos: any, i: number) => [String(i), pos])
+    : positions && typeof positions === "object"
+      ? Object.entries(positions)
+      : [];
+
+  for (const [key, pos] of entries) {
+    if (pos && pos.claimableLamports) {
+      const lamports = BigInt(pos.claimableLamports);
+      totalClaimableLamports += lamports;
+      summary.push({
+        tokenMint: pos.tokenMint || key,
+        type: pos.type || "unknown",
+        claimable: Number(lamports) / 1e9,
+        claimableLamports: pos.claimableLamports,
+      });
     }
   }
 
   console.log(JSON.stringify({
     wallet,
-    totalClaimableSOL: totalClaimableLamports / 1e9,
+    totalClaimableSOL: Number(totalClaimableLamports) / 1e9,
     totalClaimableLamports: totalClaimableLamports.toString(),
     positionCount: summary.length,
     positions: summary,
@@ -83,4 +88,7 @@ async function main() {
   }, null, 2));
 }
 
-main();
+main().catch((err) => {
+  console.error("Error:", err instanceof Error ? err.message : err);
+  process.exit(1);
+});

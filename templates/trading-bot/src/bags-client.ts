@@ -4,7 +4,7 @@
  */
 
 import { BagsClient } from "@bagsfm/bags-sdk";
-import { Keypair, VersionedTransaction } from "@solana/web3.js";
+import { Connection, Keypair, VersionedTransaction } from "@solana/web3.js";
 import bs58 from "bs58";
 
 if (!process.env.BAGS_API_KEY) {
@@ -17,6 +17,10 @@ if (!process.env.SOLANA_PRIVATE_KEY) {
 export const bags = new BagsClient({
   apiKey: process.env.BAGS_API_KEY,
 });
+
+export const connection = new Connection(
+  process.env.SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com"
+);
 
 export const wallet = Keypair.fromSecretKey(
   bs58.decode(process.env.SOLANA_PRIVATE_KEY)
@@ -50,12 +54,20 @@ export async function swap(
     userPublicKey: wallet.publicKey.toBase58(),
   });
 
-  // Deserialize, sign, and submit via Jito
-  const txBuffer = Buffer.from(swapTransaction, "base64");
+  // Deserialize and sign (SDK returns base58-encoded transaction)
+  const txBuffer = bs58.decode(swapTransaction);
   const tx = VersionedTransaction.deserialize(txBuffer);
   tx.sign([wallet]);
 
-  const serialized = Buffer.from(tx.serialize()).toString("base64");
+  // Simulate before submitting
+  const simulation = await connection.simulateTransaction(tx);
+  if (simulation.value.err) {
+    console.error("Simulation failed:", simulation.value.err);
+    return { quote, executed: false, error: simulation.value.err };
+  }
+
+  // Submit via Jito bundle (MEV-protected, base58-encoded)
+  const serialized = bs58.encode(tx.serialize());
 
   const bundleId = await bags.solana.sendBundle({
     transactions: [serialized],

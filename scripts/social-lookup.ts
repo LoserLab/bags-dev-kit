@@ -69,4 +69,7 @@ async function main() {
   }, null, 2));
 }
 
-main();
+main().catch((err) => {
+  console.error("Error:", err instanceof Error ? err.message : err);
+  process.exit(1);
+});
