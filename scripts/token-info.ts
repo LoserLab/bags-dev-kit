@@ -10,23 +10,18 @@
  *   npx tsx token-info.ts --top                   Top tokens by lifetime fees
  */
 
-import { readFileSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
+import { loadConfig, apiFetch, apiFetchOrExit } from "./shared";
 
-const API_BASE = "https://public-api-v2.bags.fm/api/v1";
-const CONFIG_PATH = join(homedir(), ".bags-dev-kit", "config.json");
-
-function loadConfig() {
-  try {
-    return JSON.parse(readFileSync(CONFIG_PATH, "utf-8"));
-  } catch {
-    console.error("Config not found. Run /bags-dev-kit:setup first.");
-    process.exit(1);
-  }
+interface TokenFeedItem {
+  name?: string;
+  symbol?: string;
+  tokenMint?: string;
+  status?: string;
+  description?: string;
+  image?: string;
 }
 
-function parseArgs() {
+function parseArgs(): Record<string, string | boolean> {
   const args = process.argv.slice(2);
   const flags: Record<string, string | boolean> = {};
   for (let i = 0; i < args.length; i++) {
@@ -37,51 +32,35 @@ function parseArgs() {
   return flags;
 }
 
-async function main() {
+async function main(): Promise<void> {
   const config = loadConfig();
   const flags = parseArgs();
-  const headers = { "x-api-key": config.apiKey };
 
   if (flags.mint) {
-    // Get creators for a specific token
-    const [creatorsRes, feesRes] = await Promise.all([
-      fetch(`${API_BASE}/token-launch/creator/v3?tokenMint=${flags.mint}`, { headers }),
-      fetch(`${API_BASE}/token-launch/lifetime-fees?tokenMint=${flags.mint}`, { headers }),
+    const mint = flags.mint as string;
+    const [creators, feesRaw] = await Promise.all([
+      apiFetch(`/token-launch/creator/v3?tokenMint=${mint}`, config.apiKey),
+      apiFetch<string>(`/token-launch/lifetime-fees?tokenMint=${mint}`, config.apiKey),
     ]);
 
-    const creators = await creatorsRes.json();
-    const fees = await feesRes.json();
-
     console.log(JSON.stringify({
-      tokenMint: flags.mint,
-      creators: creators.success ? creators.response : null,
-      lifetimeFees: fees.success ? {
-        lamports: fees.response,
-        sol: parseInt(fees.response as string) / 1e9,
+      tokenMint: mint,
+      creators,
+      lifetimeFees: feesRaw ? {
+        lamports: feesRaw,
+        sol: Number(BigInt(feesRaw)) / 1e9,
       } : null,
     }, null, 2));
   } else if (flags.top) {
-    const res = await fetch(`${API_BASE}/token-launch/top-tokens/lifetime-fees`, { headers });
-    const data = await res.json();
-    if (!data.success) {
-      console.error("Failed:", data.error || "Unknown error");
-      process.exit(1);
-    }
-    console.log(JSON.stringify(data.response, null, 2));
+    const topTokens = await apiFetchOrExit(`/token-launch/top-tokens/lifetime-fees`, config.apiKey);
+    console.log(JSON.stringify(topTokens, null, 2));
   } else {
-    // Default: feed
-    const res = await fetch(`${API_BASE}/token-launch/feed`, { headers });
-    const data = await res.json();
-    if (!data.success) {
-      console.error("Failed:", data.error || "Unknown error");
-      process.exit(1);
-    }
+    const tokens = await apiFetchOrExit<TokenFeedItem[]>(`/token-launch/feed`, config.apiKey);
 
-    const tokens = data.response;
     if (Array.isArray(tokens)) {
       console.log(JSON.stringify({
         count: tokens.length,
-        tokens: tokens.map((t: any) => ({
+        tokens: tokens.map((t) => ({
           name: t.name,
           symbol: t.symbol,
           mint: t.tokenMint,

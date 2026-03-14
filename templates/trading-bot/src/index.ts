@@ -1,51 +1,47 @@
 /**
- * Trading Bot - Entry Point
+ * Trading Bot
  *
- * This template creates a trading bot that:
- * 1. Monitors the Bags token feed for new launches
- * 2. Gets swap quotes for potential trades
- * 3. Executes trades via Jito bundles (MEV-protected)
- *
- * Customize the strategy in this file.
+ * Monitors the Bags token feed for new launches,
+ * gets swap quotes, and executes trades via Jito bundles.
  *
  * Environment variables needed:
- * - BAGS_API_KEY          Your Bags API key
- * - SOLANA_PRIVATE_KEY    Base58-encoded private key
- * - SOLANA_RPC_URL        Helius or other Solana RPC endpoint
+ * - BAGS_API_KEY         (https://dev.bags.fm)
+ * - SOLANA_PRIVATE_KEY   (base58-encoded)
+ * - SOLANA_RPC_URL       (Helius recommended)
  */
 
-import { swap, getRecentLaunches, wallet, WSOL } from "./bags-client";
+import { getQuote, executeSwap, getRecentLaunches, getWallet, WSOL } from "./bags-client";
 
-const POLL_INTERVAL_MS = 10_000; // 10 seconds
+const POLL_INTERVAL_MS = 10_000;
 const SEEN_MINTS = new Set<string>();
 
-async function checkForNewLaunches() {
+async function checkForNewLaunches(): Promise<void> {
   try {
     const launches = await getRecentLaunches();
 
     for (const token of launches) {
-      if (SEEN_MINTS.has(token.tokenMint)) continue;
-      SEEN_MINTS.add(token.tokenMint);
+      const mint = token.tokenMint as string;
+      if (!mint || SEEN_MINTS.has(mint)) continue;
+      SEEN_MINTS.add(mint);
 
-      console.log(`New token: ${token.name} (${token.symbol}) - ${token.tokenMint}`);
+      console.log(`New token: ${token.name} (${token.symbol}) - ${mint}`);
 
       // TODO: Add your strategy here
       // Example: get a quote for 0.1 SOL worth
-      // const result = await swap(WSOL, token.tokenMint, "100000000", false);
+      // const quote = await getQuote(WSOL, mint, "100000000");
+      // const result = await executeSwap(quote);
     }
   } catch (error) {
-    console.error("Poll error:", error);
+    console.error("Poll error:", error instanceof Error ? error.message : error);
   }
 }
 
-async function main() {
+async function main(): Promise<void> {
+  const wallet = getWallet();
   console.log(`Bot wallet: ${wallet.publicKey.toBase58()}`);
   console.log(`Polling every ${POLL_INTERVAL_MS / 1000}s...`);
 
-  // Initial check
   await checkForNewLaunches();
-
-  // Poll loop
   setInterval(checkForNewLaunches, POLL_INTERVAL_MS);
 }
 

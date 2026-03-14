@@ -1,0 +1,873 @@
+{
+  "version": 8,
+  "created": "2026-03-14T06:54:49+00:00",
+  "updated": "2026-03-14T07:06:35+00:00",
+  "queue_order": [
+    "review::.::holistic::abstraction_fitness::thin_sdk_wrappers_fee_sharing",
+    "review::.::holistic::ai_generated_debt::identical_error_handler_all_scripts",
+    "review::.::holistic::ai_generated_debt::index_ts_comment_bloat",
+    "review::.::holistic::api_surface_coherence::inconsistent_parameter_style_across_templates",
+    "review::.::holistic::api_surface_coherence::swap_function_overloaded",
+    "review::.::holistic::authorization_consistency::non_null_assertion_bypasses_guard",
+    "review::.::holistic::contract_coherence::prepare_launch_uncertain_transactions",
+    "review::.::holistic::convention_outlier::index_ts_role_inconsistency",
+    "review::.::holistic::cross_module_architecture::raw_fetch_fallback_duplication",
+    "review::.::holistic::design_coherence::token_info_multi_responsibility",
+    "review::.::holistic::error_consistency::missing_res_ok_checks",
+    "review::.::holistic::error_consistency::mixed_error_message_formatting",
+    "review::.::holistic::error_consistency::silent_error_swallow_trading_bot",
+    "review::.::holistic::high_level_elegance::social_lookup_misplaced",
+    "review::.::holistic::incomplete_migration::raw_fetch_fallback_sdk_gap",
+    "review::.::holistic::initialization_coupling::template_env_at_import",
+    "review::.::holistic::initialization_coupling::trading_bot_global_singletons",
+    "review::.::holistic::logic_clarity::async_without_await_fee_sharing",
+    "review::.::holistic::logic_clarity::fees_nested_ternary",
+    "review::.::holistic::low_level_elegance::dense_response_shape_normalization",
+    "review::.::holistic::low_level_elegance::hardcoded_decimal_assumption",
+    "review::.::holistic::low_level_elegance::inconsistent_error_check_token_info",
+    "review::.::holistic::mid_level_elegance::duplicated_boundary_contracts_scripts",
+    "review::.::holistic::mid_level_elegance::mixed_sdk_raw_fetch_boundary",
+    "review::.::holistic::naming_quality::generic_entries_variable",
+    "review::.::holistic::test_strategy::zero_test_coverage_critical_logic",
+    "review::.::holistic::type_safety::analyze_record_unknown",
+    "review::.::holistic::type_safety::explicit_any_api_responses",
+    "review::.::holistic::type_safety::missing_return_types_scripts",
+    "review::.::holistic::type_safety::missing_return_types_templates"
+  ],
+  "deferred": [],
+  "skipped": {},
+  "active_cluster": null,
+  "overrides": {
+    "test_coverage::scripts/analyze.ts": {
+      "issue_id": "test_coverage::scripts/analyze.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::scripts/token-info.ts": {
+      "issue_id": "test_coverage::scripts/token-info.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::templates/token-launcher/src/bags-client.ts": {
+      "issue_id": "test_coverage::templates/token-launcher/src/bags-client.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::scripts/quote.ts": {
+      "issue_id": "test_coverage::scripts/quote.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::scripts/fees.ts": {
+      "issue_id": "test_coverage::scripts/fees.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::templates/trading-bot/src/bags-client.ts": {
+      "issue_id": "test_coverage::templates/trading-bot/src/bags-client.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::templates/fee-sharing-app/src/bags-client.ts": {
+      "issue_id": "test_coverage::templates/fee-sharing-app/src/bags-client.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::scripts/pools.ts": {
+      "issue_id": "test_coverage::scripts/pools.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::scripts/social-lookup.ts": {
+      "issue_id": "test_coverage::scripts/social-lookup.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::scripts/setup.ts": {
+      "issue_id": "test_coverage::scripts/setup.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "test_coverage::templates/trading-bot/src/index.ts": {
+      "issue_id": "test_coverage::templates/trading-bot/src/index.ts",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/test_coverage",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "security::scripts/analyze.ts::security::log_sensitive::scripts/analyze.ts::49": {
+      "issue_id": "security::scripts/analyze.ts::security::log_sensitive::scripts/analyze.ts::49",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/security",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "security::scripts/token-info.ts::security::log_sensitive::scripts/token-info.ts::94": {
+      "issue_id": "security::scripts/token-info.ts::security::log_sensitive::scripts/token-info.ts::94",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/security",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    },
+    "security::templates/trading-bot/src/index.ts::security::log_sensitive::templates/trading-bot/src/index.ts::30": {
+      "issue_id": "security::templates/trading-bot/src/index.ts::security::log_sensitive::templates/trading-bot/src/index.ts::30",
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "cluster": "auto/security",
+      "updated_at": "2026-03-14T06:54:49+00:00"
+    }
+  },
+  "clusters": {
+    "auto/test_coverage": {
+      "name": "auto/test_coverage",
+      "description": "Fix 11 test coverage issues",
+      "issue_ids": [
+        "test_coverage::scripts/analyze.ts",
+        "test_coverage::scripts/token-info.ts",
+        "test_coverage::templates/token-launcher/src/bags-client.ts",
+        "test_coverage::scripts/quote.ts",
+        "test_coverage::scripts/fees.ts",
+        "test_coverage::templates/trading-bot/src/bags-client.ts",
+        "test_coverage::templates/fee-sharing-app/src/bags-client.ts",
+        "test_coverage::scripts/pools.ts",
+        "test_coverage::scripts/social-lookup.ts",
+        "test_coverage::scripts/setup.ts",
+        "test_coverage::templates/trading-bot/src/index.ts"
+      ],
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "updated_at": "2026-03-14T06:54:49+00:00",
+      "auto": true,
+      "cluster_key": "detector::test_coverage",
+      "action": "add tests for untested production modules \u2014 prioritize by import count",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "refactor",
+      "execution_policy": "planned_only"
+    },
+    "auto/security": {
+      "name": "auto/security",
+      "description": "Fix 3 security issues",
+      "issue_ids": [
+        "security::scripts/analyze.ts::security::log_sensitive::scripts/analyze.ts::49",
+        "security::scripts/token-info.ts::security::log_sensitive::scripts/token-info.ts::94",
+        "security::templates/trading-bot/src/index.ts::security::log_sensitive::templates/trading-bot/src/index.ts::30"
+      ],
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "updated_at": "2026-03-14T06:54:49+00:00",
+      "auto": true,
+      "cluster_key": "detector::security",
+      "action": "review and fix security issues \u2014 prioritize by severity",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "manual_fix",
+      "execution_policy": "planned_only"
+    },
+    "auto/initial-review": {
+      "name": "auto/initial-review",
+      "description": "Initial review of 20 unscored subjective dimensions",
+      "issue_ids": [],
+      "created_at": "2026-03-14T06:54:49+00:00",
+      "updated_at": "2026-03-14T06:54:49+00:00",
+      "auto": true,
+      "cluster_key": "subjective::unscored",
+      "action": "desloppify review --prepare --dimensions abstraction_fitness,ai_generated_debt,api_surface_coherence,authorization_consistency,contract_coherence,convention_outlier,cross_module_architecture,dependency_health,design_coherence,error_consistency,high_level_elegance,incomplete_migration,initialization_coupling,logic_clarity,low_level_elegance,mid_level_elegance,naming_quality,package_organization,test_strategy,type_safety",
+      "execution_status": "review",
+      "user_modified": false,
+      "action_type": "manual_fix",
+      "execution_policy": "planned_only"
+    }
+  },
+  "superseded": {},
+  "promoted_ids": [],
+  "plan_start_scores": {
+    "strict": 72.6,
+    "overall": 72.6,
+    "objective": 55.6,
+    "verified": 55.6
+  },
+  "refresh_state": {
+    "lifecycle_phase": "review_initial",
+    "subjective_review_completed_at_scan_count": 2,
+    "postflight_scan_completed_at_scan_count": 4
+  },
+  "execution_log": [
+    {
+      "timestamp": "2026-03-14T06:54:49+00:00",
+      "action": "sync_subjective",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "changes": true
+      }
+    },
+    {
+      "timestamp": "2026-03-14T06:54:49+00:00",
+      "action": "auto_cluster",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "changes": true
+      }
+    },
+    {
+      "timestamp": "2026-03-14T06:54:49+00:00",
+      "action": "sync_lifecycle_phase",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "phase": "review_initial"
+      }
+    },
+    {
+      "timestamp": "2026-03-14T06:54:49+00:00",
+      "action": "seed_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:01:28+00:00",
+      "action": "review_import_sync",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "trigger": "review_import",
+        "new_ids": [
+          "review::.::holistic::abstraction_fitness::thin_sdk_wrappers_fee_sharing",
+          "review::.::holistic::ai_generated_debt::identical_error_handler_all_scripts",
+          "review::.::holistic::ai_generated_debt::index_ts_comment_bloat",
+          "review::.::holistic::ai_generated_debt::loadconfig_duplicated_6_times",
+          "review::.::holistic::ai_generated_debt::pass_through_wrappers_fee_sharing",
+          "review::.::holistic::api_surface_coherence::inconsistent_parameter_style_across_templates",
+          "review::.::holistic::api_surface_coherence::mixed_sdk_raw_fetch_same_module",
+          "review::.::holistic::api_surface_coherence::swap_function_overloaded",
+          "review::.::holistic::authorization_consistency::non_null_assertion_bypasses_guard",
+          "review::.::holistic::contract_coherence::prepare_launch_uncertain_transactions",
+          "review::.::holistic::contract_coherence::quote_decimal_assumption",
+          "review::.::holistic::contract_coherence::safefetch_untyped_return",
+          "review::.::holistic::convention_outlier::analyze_safefetch_outlier",
+          "review::.::holistic::convention_outlier::index_ts_role_inconsistency",
+          "review::.::holistic::cross_module_architecture::raw_fetch_fallback_duplication",
+          "review::.::holistic::cross_module_architecture::scripts_missing_shared_module",
+          "review::.::holistic::dependency_health::unused_privy_dependency",
+          "review::.::holistic::design_coherence::fee_sharing_async_no_await",
+          "review::.::holistic::design_coherence::quote_duplication",
+          "review::.::holistic::design_coherence::repeated_script_boilerplate",
+          "review::.::holistic::design_coherence::token_info_multi_responsibility",
+          "review::.::holistic::error_consistency::ambiguous_empty_array_on_failure",
+          "review::.::holistic::error_consistency::missing_res_ok_checks",
+          "review::.::holistic::error_consistency::mixed_error_message_formatting",
+          "review::.::holistic::error_consistency::silent_error_swallow_trading_bot",
+          "review::.::holistic::high_level_elegance::social_lookup_misplaced",
+          "review::.::holistic::incomplete_migration::raw_fetch_fallback_sdk_gap",
+          "review::.::holistic::initialization_coupling::template_env_at_import",
+          "review::.::holistic::initialization_coupling::trading_bot_global_singletons",
+          "review::.::holistic::logic_clarity::async_without_await_fee_sharing",
+          "review::.::holistic::logic_clarity::fees_nested_ternary",
+          "review::.::holistic::low_level_elegance::dense_response_shape_normalization",
+          "review::.::holistic::low_level_elegance::hardcoded_decimal_assumption",
+          "review::.::holistic::low_level_elegance::inconsistent_error_check_token_info",
+          "review::.::holistic::mid_level_elegance::duplicated_boundary_contracts_scripts",
+          "review::.::holistic::mid_level_elegance::mixed_sdk_raw_fetch_boundary",
+          "review::.::holistic::naming_quality::generic_entries_variable",
+          "review::.::holistic::package_organization::scripts_missing_shared_module",
+          "review::.::holistic::test_strategy::zero_test_coverage_critical_logic",
+          "review::.::holistic::type_safety::analyze_record_unknown",
+          "review::.::holistic::type_safety::explicit_any_api_responses",
+          "review::.::holistic::type_safety::missing_return_types_scripts",
+          "review::.::holistic::type_safety::missing_return_types_templates"
+        ],
+        "added_to_queue": [
+          "review::.::holistic::abstraction_fitness::thin_sdk_wrappers_fee_sharing",
+          "review::.::holistic::ai_generated_debt::identical_error_handler_all_scripts",
+          "review::.::holistic::ai_generated_debt::index_ts_comment_bloat",
+          "review::.::holistic::ai_generated_debt::loadconfig_duplicated_6_times",
+          "review::.::holistic::ai_generated_debt::pass_through_wrappers_fee_sharing",
+          "review::.::holistic::api_surface_coherence::inconsistent_parameter_style_across_templates",
+          "review::.::holistic::api_surface_coherence::mixed_sdk_raw_fetch_same_module",
+          "review::.::holistic::api_surface_coherence::swap_function_overloaded",
+          "review::.::holistic::authorization_consistency::non_null_assertion_bypasses_guard",
+          "review::.::holistic::contract_coherence::prepare_launch_uncertain_transactions",
+          "review::.::holistic::contract_coherence::quote_decimal_assumption",
+          "review::.::holistic::contract_coherence::safefetch_untyped_return",
+          "review::.::holistic::convention_outlier::analyze_safefetch_outlier",
+          "review::.::holistic::convention_outlier::index_ts_role_inconsistency",
+          "review::.::holistic::cross_module_architecture::raw_fetch_fallback_duplication",
+          "review::.::holistic::cross_module_architecture::scripts_missing_shared_module",
+          "review::.::holistic::dependency_health::unused_privy_dependency",
+          "review::.::holistic::design_coherence::fee_sharing_async_no_await",
+          "review::.::holistic::design_coherence::quote_duplication",
+          "review::.::holistic::design_coherence::repeated_script_boilerplate",
+          "review::.::holistic::design_coherence::token_info_multi_responsibility",
+          "review::.::holistic::error_consistency::ambiguous_empty_array_on_failure",
+          "review::.::holistic::error_consistency::missing_res_ok_checks",
+          "review::.::holistic::error_consistency::mixed_error_message_formatting",
+          "review::.::holistic::error_consistency::silent_error_swallow_trading_bot",
+          "review::.::holistic::high_level_elegance::social_lookup_misplaced",
+          "review::.::holistic::incomplete_migration::raw_fetch_fallback_sdk_gap",
+          "review::.::holistic::initialization_coupling::template_env_at_import",
+          "review::.::holistic::initialization_coupling::trading_bot_global_singletons",
+          "review::.::holistic::logic_clarity::async_without_await_fee_sharing",
+          "review::.::holistic::logic_clarity::fees_nested_ternary",
+          "review::.::holistic::low_level_elegance::dense_response_shape_normalization",
+          "review::.::holistic::low_level_elegance::hardcoded_decimal_assumption",
+          "review::.::holistic::low_level_elegance::inconsistent_error_check_token_info",
+          "review::.::holistic::mid_level_elegance::duplicated_boundary_contracts_scripts",
+          "review::.::holistic::mid_level_elegance::mixed_sdk_raw_fetch_boundary",
+          "review::.::holistic::naming_quality::generic_entries_variable",
+          "review::.::holistic::package_organization::scripts_missing_shared_module",
+          "review::.::holistic::test_strategy::zero_test_coverage_critical_logic",
+          "review::.::holistic::type_safety::analyze_record_unknown",
+          "review::.::holistic::type_safety::explicit_any_api_responses",
+          "review::.::holistic::type_safety::missing_return_types_scripts",
+          "review::.::holistic::type_safety::missing_return_types_templates"
+        ],
+        "workflow_injected_ids": [],
+        "triage_injected": false,
+        "triage_injected_ids": [],
+        "triage_deferred": false,
+        "diff_new": 43,
+        "diff_reopened": 0,
+        "diff_auto_resolved": 20,
+        "stale_pruned_from_queue": [],
+        "covered_subjective_pruned_from_queue": [
+          "subjective::abstraction_fitness",
+          "subjective::ai_generated_debt",
+          "subjective::api_surface_coherence",
+          "subjective::authorization_consistency",
+          "subjective::contract_coherence",
+          "subjective::convention_outlier",
+          "subjective::cross_module_architecture",
+          "subjective::dependency_health",
+          "subjective::design_coherence",
+          "subjective::error_consistency",
+          "subjective::high_level_elegance",
+          "subjective::incomplete_migration",
+          "subjective::initialization_coupling",
+          "subjective::logic_clarity",
+          "subjective::low_level_elegance",
+          "subjective::mid_level_elegance",
+          "subjective::naming_quality",
+          "subjective::package_organization",
+          "subjective::test_strategy",
+          "subjective::type_safety"
+        ],
+        "covered_subjective": [
+          "subjective::abstraction_fitness",
+          "subjective::ai_generated_debt",
+          "subjective::api_surface_coherence",
+          "subjective::authorization_consistency",
+          "subjective::contract_coherence",
+          "subjective::convention_outlier",
+          "subjective::cross_module_architecture",
+          "subjective::dependency_health",
+          "subjective::design_coherence",
+          "subjective::error_consistency",
+          "subjective::high_level_elegance",
+          "subjective::incomplete_migration",
+          "subjective::initialization_coupling",
+          "subjective::logic_clarity",
+          "subjective::low_level_elegance",
+          "subjective::mid_level_elegance",
+          "subjective::naming_quality",
+          "subjective::package_organization",
+          "subjective::test_strategy",
+          "subjective::type_safety"
+        ],
+        "stale_sync_injected": [],
+        "stale_sync_pruned": [],
+        "auto_cluster_changes": 0,
+        "import_scores_injected": [],
+        "import_scores_pruned": [],
+        "sync_status": "synced",
+        "sync_message": null
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:01:31+00:00",
+      "action": "clear_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:01:31+00:00",
+      "action": "complete_postflight_scan",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "scan_count": 3
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:04:44+00:00",
+      "action": "seed_start_scores",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:04:44+00:00",
+      "action": "complete_postflight_scan",
+      "issue_ids": [],
+      "cluster_name": null,
+      "actor": "system",
+      "note": null,
+      "detail": {
+        "scan_count": 4
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:05:58+00:00",
+      "action": "done",
+      "issue_ids": [
+        "pass_through_wrappers"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Removed pass-through wrappers, exposed getBagsClient instead",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:05:58+00:00",
+      "action": "done",
+      "issue_ids": [
+        "mixed_sd"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Added comment explaining SDK gap, consistent error handling",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:05:59+00:00",
+      "action": "done",
+      "issue_ids": [
+        "quote_decimal"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Added decimals parameter, documented default behavior",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:05:59+00:00",
+      "action": "done",
+      "issue_ids": [
+        "analyze_safefetch_outlier"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "All scripts now use shared apiFetch/apiFetchOrExit",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:05:59+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::convention_outlier::analyze_safefetch_outlier"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "All scripts now use shared apiFetch/apiFetchOrExit",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually All scripts now use shared apiFetch/apiFetchOrExit and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:05:59+00:00",
+      "action": "done",
+      "issue_ids": [
+        "scripts_missing_shared"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Created scripts/shared.ts with loadConfig, API_BASE, CONFIG_PATH, apiFetch",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:00+00:00",
+      "action": "done",
+      "issue_ids": [
+        "fee_sharing_async_no_await"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Removed async, replaced wrappers with getBagsClient export",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:00+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::design_coherence::fee_sharing_async_no_await"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Removed async, replaced wrappers with getBagsClient export",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Removed async, replaced wrappers with getBagsClient export and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:09+00:00",
+      "action": "done",
+      "issue_ids": [
+        "loadconfig_duplicated"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Extracted loadConfig, API_BASE, CONFIG_PATH, and apiFetch into scripts/shared.ts module that all scripts import from",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:10+00:00",
+      "action": "done",
+      "issue_ids": [
+        "safefetch_untyped"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Replaced with shared apiFetch<T> generic function with explicit Promise<T|null> return type",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:10+00:00",
+      "action": "done",
+      "issue_ids": [
+        "unused_privy"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Removed @privy-io/react-auth from both fee-sharing-app and token-launcher package.json files",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:10+00:00",
+      "action": "done",
+      "issue_ids": [
+        "quote_duplication"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Rewrote quote.ts to import loadConfig and apiFetchOrExit from shared.ts instead of duplicating",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:10+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::design_coherence::quote_duplication"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Rewrote quote.ts to import loadConfig and apiFetchOrExit from shared.ts instead of duplicating",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Rewrote quote.ts to import loadConfig and apiFetchOrExit from shared.ts instead of duplicating and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:31+00:00",
+      "action": "done",
+      "issue_ids": [
+        "loadconfig_duplicated_6_times"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:32+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::ai_generated_debt::loadconfig_duplicated_6_times"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:32+00:00",
+      "action": "done",
+      "issue_ids": [
+        "pass_through_wrappers_fee_sharing"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:32+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::ai_generated_debt::pass_through_wrappers_fee_sharing"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:32+00:00",
+      "action": "done",
+      "issue_ids": [
+        "mixed_sdk_raw_fetch_same_module"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:32+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::api_surface_coherence::mixed_sdk_raw_fetch_same_module"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:32+00:00",
+      "action": "done",
+      "issue_ids": [
+        "quote_decimal_assumption"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:32+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::contract_coherence::quote_decimal_assumption"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:33+00:00",
+      "action": "done",
+      "issue_ids": [
+        "safefetch_untyped_return"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:33+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::contract_coherence::safefetch_untyped_return"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:33+00:00",
+      "action": "done",
+      "issue_ids": [
+        "scripts_missing_shared_module"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:33+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::cross_module_architecture::scripts_missing_shared_module",
+        "review::.::holistic::package_organization::scripts_missing_shared_module"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:33+00:00",
+      "action": "done",
+      "issue_ids": [
+        "unused_privy_dependency"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:33+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::dependency_health::unused_privy_dependency"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:34+00:00",
+      "action": "done",
+      "issue_ids": [
+        "repeated_script_boilerplate"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:34+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::design_coherence::repeated_script_boilerplate"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:34+00:00",
+      "action": "done",
+      "issue_ids": [
+        "fee_sharing_async_no_await"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:34+00:00",
+      "action": "done",
+      "issue_ids": [
+        "quote_duplication"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:35+00:00",
+      "action": "done",
+      "issue_ids": [
+        "ambiguous_empty_array_on_failure"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    },
+    {
+      "timestamp": "2026-03-14T07:06:35+00:00",
+      "action": "resolve",
+      "issue_ids": [
+        "review::.::holistic::error_consistency::ambiguous_empty_array_on_failure"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {
+        "status": "fixed",
+        "attestation": "I have actually Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates and I am not gaming the score."
+      }
+    },
+    {
+      "timestamp": "2026-03-14T07:06:35+00:00",
+      "action": "done",
+      "issue_ids": [
+        "missing_res_ok_checks"
+      ],
+      "cluster_name": null,
+      "actor": "user",
+      "note": "Fixed: extracted shared module, removed wrappers, added types, consistent error handling across all scripts and templates",
+      "detail": {}
+    }
+  ],
+  "epic_triage_meta": {},
+  "commit_log": [],
+  "uncommitted_issues": [
+    "review::.::holistic::convention_outlier::analyze_safefetch_outlier",
+    "review::.::holistic::design_coherence::fee_sharing_async_no_await",
+    "review::.::holistic::design_coherence::quote_duplication",
+    "review::.::holistic::ai_generated_debt::loadconfig_duplicated_6_times",
+    "review::.::holistic::ai_generated_debt::pass_through_wrappers_fee_sharing",
+    "review::.::holistic::api_surface_coherence::mixed_sdk_raw_fetch_same_module",
+    "review::.::holistic::contract_coherence::quote_decimal_assumption",
+    "review::.::holistic::contract_coherence::safefetch_untyped_return",
+    "review::.::holistic::cross_module_architecture::scripts_missing_shared_module",
+    "review::.::holistic::package_organization::scripts_missing_shared_module",
+    "review::.::holistic::dependency_health::unused_privy_dependency",
+    "review::.::holistic::design_coherence::repeated_script_boilerplate",
+    "review::.::holistic::error_consistency::ambiguous_empty_array_on_failure"
+  ],
+  "commit_tracking_branch": null,
+  "scan_count_at_plan_start": 4
+}

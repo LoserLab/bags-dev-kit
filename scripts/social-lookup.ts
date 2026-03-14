@@ -12,24 +12,11 @@
  * Providers: twitter, tiktok, kick, github
  */
 
-import { readFileSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
+import { loadConfig, apiFetchOrExit } from "./shared";
 
-const API_BASE = "https://public-api-v2.bags.fm/api/v1";
-const CONFIG_PATH = join(homedir(), ".bags-dev-kit", "config.json");
-const VALID_PROVIDERS = ["twitter", "tiktok", "kick", "github"];
+const VALID_PROVIDERS = ["twitter", "tiktok", "kick", "github"] as const;
 
-function loadConfig() {
-  try {
-    return JSON.parse(readFileSync(CONFIG_PATH, "utf-8"));
-  } catch {
-    console.error("Config not found. Run /bags-dev-kit:setup first.");
-    process.exit(1);
-  }
-}
-
-async function main() {
+async function main(): Promise<void> {
   const [, , provider, username] = process.argv;
 
   if (!provider || !username) {
@@ -38,34 +25,29 @@ async function main() {
     process.exit(1);
   }
 
-  if (!VALID_PROVIDERS.includes(provider.toLowerCase())) {
+  const normalizedProvider = provider.toLowerCase();
+  if (!VALID_PROVIDERS.includes(normalizedProvider as typeof VALID_PROVIDERS[number])) {
     console.error(`Invalid provider "${provider}". Use: ${VALID_PROVIDERS.join(", ")}`);
     process.exit(1);
   }
 
   const config = loadConfig();
+  const normalizedUsername = username.replace(/^@/, "");
 
   const params = new URLSearchParams({
-    username: username.replace(/^@/, ""),
-    provider: provider.toLowerCase(),
+    username: normalizedUsername,
+    provider: normalizedProvider,
   });
 
-  const res = await fetch(
-    `${API_BASE}/token-launch/fee-share/wallet/v2?${params}`,
-    { headers: { "x-api-key": config.apiKey } }
+  const wallet = await apiFetchOrExit(
+    `/token-launch/fee-share/wallet/v2?${params}`,
+    config.apiKey
   );
 
-  const data = await res.json();
-
-  if (!data.success) {
-    console.error("Lookup failed:", data.error || "Unknown error");
-    process.exit(1);
-  }
-
   console.log(JSON.stringify({
-    provider: provider.toLowerCase(),
-    username: username.replace(/^@/, ""),
-    wallet: data.response,
+    provider: normalizedProvider,
+    username: normalizedUsername,
+    wallet,
   }, null, 2));
 }
 

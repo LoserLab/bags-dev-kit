@@ -10,23 +10,9 @@
  *   npx tsx pools.ts --token <mint>           Look up specific token
  */
 
-import { readFileSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
+import { loadConfig, apiFetchOrExit } from "./shared";
 
-const API_BASE = "https://public-api-v2.bags.fm/api/v1";
-const CONFIG_PATH = join(homedir(), ".bags-dev-kit", "config.json");
-
-function loadConfig() {
-  try {
-    return JSON.parse(readFileSync(CONFIG_PATH, "utf-8"));
-  } catch {
-    console.error("Config not found. Run /bags-dev-kit:setup first.");
-    process.exit(1);
-  }
-}
-
-function parseArgs() {
+function parseArgs(): Record<string, string | boolean> {
   const args = process.argv.slice(2);
   const flags: Record<string, string | boolean> = {};
   for (let i = 0; i < args.length; i++) {
@@ -36,38 +22,26 @@ function parseArgs() {
   return flags;
 }
 
-async function main() {
+async function main(): Promise<void> {
   const config = loadConfig();
   const flags = parseArgs();
 
   if (flags.token) {
-    // Single token lookup
-    const res = await fetch(
-      `${API_BASE}/solana/bags/pools/token-mint?tokenMint=${flags.token}`,
-      { headers: { "x-api-key": config.apiKey } }
+    const pool = await apiFetchOrExit(
+      `/solana/bags/pools/token-mint?tokenMint=${flags.token}`,
+      config.apiKey
     );
-    const data = await res.json();
-    if (!data.success) {
-      console.error("Pool lookup failed:", data.error || "Unknown error");
-      process.exit(1);
-    }
-    console.log(JSON.stringify(data.response, null, 2));
+    console.log(JSON.stringify(pool, null, 2));
   } else {
-    // List all pools
     const params = new URLSearchParams();
     if (flags.migrated) params.set("onlyMigrated", "true");
 
-    const url = `${API_BASE}/solana/bags/pools${params.toString() ? "?" + params : ""}`;
-    const res = await fetch(url, {
-      headers: { "x-api-key": config.apiKey },
-    });
-    const data = await res.json();
-    if (!data.success) {
-      console.error("Pool list failed:", data.error || "Unknown error");
-      process.exit(1);
-    }
+    const queryStr = params.toString();
+    const pools = await apiFetchOrExit<unknown[]>(
+      `/solana/bags/pools${queryStr ? "?" + queryStr : ""}`,
+      config.apiKey
+    );
 
-    const pools = data.response;
     console.log(JSON.stringify({
       count: Array.isArray(pools) ? pools.length : 0,
       pools,

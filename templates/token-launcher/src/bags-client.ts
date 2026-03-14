@@ -5,13 +5,19 @@
 
 import { BagsClient } from "@bagsfm/bags-sdk";
 
-if (!process.env.BAGS_API_KEY) {
-  throw new Error("BAGS_API_KEY environment variable is required");
-}
+const API_BASE = "https://public-api-v2.bags.fm/api/v1";
 
-export const bags = new BagsClient({
-  apiKey: process.env.BAGS_API_KEY,
-});
+let _client: BagsClient | null = null;
+
+function getClient(): BagsClient {
+  if (!process.env.BAGS_API_KEY) {
+    throw new Error("BAGS_API_KEY environment variable is required");
+  }
+  if (!_client) {
+    _client = new BagsClient({ apiKey: process.env.BAGS_API_KEY });
+  }
+  return _client;
+}
 
 export interface LaunchConfig {
   name: string;
@@ -27,16 +33,23 @@ export interface LaunchConfig {
   initialBuyLamports?: string;
 }
 
+export interface LaunchResult {
+  tokenMint: string;
+  metadata: string;
+  feeShareAuthority: string;
+  configKey: string;
+  transactions: unknown[];
+}
+
 /**
  * Full token launch flow:
- * 1. Create fee share config
- * 2. Create token metadata
+ * 1. Create token metadata (gets tokenMint)
+ * 2. Create fee share config (uses tokenMint)
  * 3. Create launch transaction
  *
  * Returns all transactions for the user to sign.
  */
-export async function prepareLaunch(config: LaunchConfig) {
-  // Validate splits
+export async function prepareLaunch(config: LaunchConfig): Promise<LaunchResult> {
   if (config.claimers.length !== config.splits.length) {
     throw new Error("Claimers and splits must be the same length");
   }
@@ -45,8 +58,9 @@ export async function prepareLaunch(config: LaunchConfig) {
     throw new Error(`Splits must total 10,000 bps (got ${total})`);
   }
 
-  // Step 1: Create token metadata
-  const tokenInfo = await bags.tokenLaunch.createTokenInfoAndMetadata({
+  const client = getClient();
+
+  const tokenInfo = await client.tokenLaunch.createTokenInfoAndMetadata({
     name: config.name,
     symbol: config.symbol,
     description: config.description,
@@ -56,16 +70,14 @@ export async function prepareLaunch(config: LaunchConfig) {
     website: config.website,
   });
 
-  // Step 2: Create fee share config
-  const feeConfig = await bags.config.createBagsFeeShareConfig({
+  const feeConfig = await client.config.createBagsFeeShareConfig({
     payer: config.creatorWallet,
     baseMint: tokenInfo.tokenMint,
     claimersArray: config.claimers,
     basisPointsArray: config.splits,
   });
 
-  // Step 3: Create launch transaction
-  const launchTx = await bags.tokenLaunch.createLaunchTransaction({
+  const launchTx = await client.tokenLaunch.createLaunchTransaction({
     ipfs: tokenInfo.tokenMetadata,
     tokenMint: tokenInfo.tokenMint,
     wallet: config.creatorWallet,
@@ -87,14 +99,20 @@ export async function prepareLaunch(config: LaunchConfig) {
 
 /**
  * Check if Dexscreener token info is available for a launched token.
- * Uses raw fetch since this endpoint is not in the SDK.
+ * Uses raw fetch because this endpoint is not covered by the SDK.
  */
-export async function checkDexscreenerAvailability(tokenMint: string) {
+export async function checkDexscreenerAvailability(tokenMint: string): Promise<unknown> {
+  if (!process.env.BAGS_API_KEY) {
+    throw new Error("BAGS_API_KEY environment variable is required");
+  }
   const res = await fetch(
-    `https://public-api-v2.bags.fm/api/v1/solana/dexscreener/order-availability?tokenAddress=${tokenMint}`,
-    { headers: { "x-api-key": process.env.BAGS_API_KEY! } }
+    `${API_BASE}/solana/dexscreener/order-availability?tokenAddress=${tokenMint}`,
+    { headers: { "x-api-key": process.env.BAGS_API_KEY } }
   );
+  if (!res.ok) throw new Error(`Dexscreener check failed (${res.status})`);
   const data = await res.json();
   if (!data.success) throw new Error(data.error || "Dexscreener check failed");
   return data.response;
 }
+
+export { getClient as getBagsClient };

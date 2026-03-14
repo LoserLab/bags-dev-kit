@@ -5,40 +5,27 @@
  * Get a swap quote from the Bags trading API.
  *
  * Usage:
- *   npx tsx quote.ts <input-mint> <output-mint> <amount>
+ *   npx tsx quote.ts <input-mint> <output-mint> <amount> [decimals]
  *   npx tsx quote.ts SOL <token-mint> 1.5
+ *   npx tsx quote.ts SOL <token-mint> 1.5 9
  *
  * Amount is in human-readable units (e.g., 1.5 SOL, not lamports).
- * SOL is automatically resolved to the wrapped SOL mint.
+ * SOL/WSOL is automatically resolved to the wrapped SOL mint.
+ * Decimals default to 9 for SOL, 6 for others. Pass explicitly for accuracy.
  */
 
-import { readFileSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
-
-const WSOL = "So11111111111111111111111111111111111111112";
-const API_BASE = "https://public-api-v2.bags.fm/api/v1";
-const CONFIG_PATH = join(homedir(), ".bags-dev-kit", "config.json");
-
-function loadConfig() {
-  try {
-    return JSON.parse(readFileSync(CONFIG_PATH, "utf-8"));
-  } catch {
-    console.error("Config not found. Run /bags-dev-kit:setup first.");
-    process.exit(1);
-  }
-}
+import { loadConfig, apiFetchOrExit, WSOL } from "./shared";
 
 function resolveMint(input: string): string {
   if (input.toUpperCase() === "SOL" || input.toUpperCase() === "WSOL") return WSOL;
   return input;
 }
 
-async function main() {
-  const [, , inputRaw, outputRaw, amountStr] = process.argv;
+async function main(): Promise<void> {
+  const [, , inputRaw, outputRaw, amountStr, decimalsArg] = process.argv;
 
   if (!inputRaw || !outputRaw || !amountStr) {
-    console.error("Usage: npx tsx quote.ts <input-mint> <output-mint> <amount>");
+    console.error("Usage: npx tsx quote.ts <input-mint> <output-mint> <amount> [decimals]");
     console.error("Example: npx tsx quote.ts SOL DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263 1.5");
     process.exit(1);
   }
@@ -47,33 +34,26 @@ async function main() {
   const inputMint = resolveMint(inputRaw);
   const outputMint = resolveMint(outputRaw);
 
-  // Convert human amount to smallest unit
-  // SOL uses 9 decimals; most SPL tokens use 6 but some use 9 or other values
-  // For accurate conversion, check the token's actual decimals on-chain
-  const decimals = inputMint === WSOL ? 9 : 6;
-  const amount = Math.floor(parseFloat(amountStr) * 10 ** decimals).toString();
+  const inputDecimals = decimalsArg
+    ? parseInt(decimalsArg, 10)
+    : inputMint === WSOL ? 9 : 6;
 
-  const params = new URLSearchParams({
-    inputMint,
-    outputMint,
-    amount,
-  });
+  const amount = Math.floor(parseFloat(amountStr) * 10 ** inputDecimals).toString();
 
-  const res = await fetch(`${API_BASE}/trade/quote?${params}`, {
-    headers: { "x-api-key": config.apiKey },
-  });
+  const params = new URLSearchParams({ inputMint, outputMint, amount });
 
-  const data = await res.json();
+  const quote = await apiFetchOrExit<{
+    inAmount: string;
+    outAmount: string;
+    minOutAmount: string;
+    priceImpactPct: string;
+    slippageBps: number;
+    platformFee: unknown;
+    requestId: string;
+    routePlan: unknown[];
+  }>(`/trade/quote?${params}`, config.apiKey);
 
-  if (!data.success) {
-    console.error("Quote failed:", data.error || "Unknown error");
-    process.exit(1);
-  }
-
-  const quote = data.response;
-
-  // Format output
-  const inAmount = parseInt(quote.inAmount) / 10 ** decimals;
+  const inAmount = parseInt(quote.inAmount) / 10 ** inputDecimals;
   const outDecimals = outputMint === WSOL ? 9 : 6;
   const outAmount = parseInt(quote.outAmount) / 10 ** outDecimals;
   const minOut = parseInt(quote.minOutAmount) / 10 ** outDecimals;

@@ -1,0 +1,252 @@
+{
+  "command": "show",
+  "query": "review",
+  "status_filter": "open",
+  "total": 0,
+  "issues": [],
+  "narrative": {
+    "phase": "stagnation",
+    "headline": "\u26a0 7 security issues \u2014 review before other cleanup. Score plateaued at 72.6 for 4 scans. Test health (0.0%) is where the breakthrough is. (29 review work items \u2014 run `desloppify show review --status open`)",
+    "dimensions": {
+      "lowest_dimensions": [
+        {
+          "name": "Test health",
+          "strict": 0.0,
+          "failing": 12,
+          "impact": 0.0
+        },
+        {
+          "name": "Test strategy",
+          "strict": 15.0,
+          "failing": 1,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "Init coupling",
+          "strict": 62.0,
+          "failing": 2,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        }
+      ],
+      "biggest_gap_dimensions": [],
+      "stagnant_dimensions": [
+        {
+          "name": "Code quality",
+          "strict": 89.4,
+          "stuck_scans": 4
+        },
+        {
+          "name": "File health",
+          "strict": 100.0,
+          "stuck_scans": 4
+        },
+        {
+          "name": "Test health",
+          "strict": 0.0,
+          "stuck_scans": 4
+        }
+      ]
+    },
+    "actions": [
+      {
+        "type": "refactor",
+        "detector": "test_coverage",
+        "count": 12,
+        "description": "12 test_coverage work items \u2014 add tests for untested production modules \u2014 prioritize by import count",
+        "command": "desloppify show test_coverage --status open",
+        "impact": 0.0,
+        "dimension": "Test health",
+        "priority": 1,
+        "lane": "test_coverage"
+      },
+      {
+        "type": "refactor",
+        "detector": "boilerplate_duplication",
+        "count": 3,
+        "description": "3 boilerplate_duplication work items \u2014 extract shared boilerplate into reusable helpers or base classes",
+        "command": "desloppify show boilerplate_duplication --status open",
+        "impact": 0.0,
+        "dimension": "Duplication",
+        "priority": 2,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "refactor",
+        "detector": "review",
+        "count": 29,
+        "description": "29 review work items need investigation \u2014 run `desloppify show review --status open` to see them",
+        "command": "desloppify show review --status open",
+        "impact": 0.0,
+        "dimension": "Unknown",
+        "priority": 3,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "smells",
+        "count": 18,
+        "description": "18 smells issues \u2014 inspect with `desloppify next` and fix manually",
+        "command": "desloppify show smells --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 4,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "security",
+        "count": 7,
+        "description": "7 security work items \u2014 review and fix security issues \u2014 prioritize by severity",
+        "command": "desloppify show security --status open",
+        "impact": 0.0,
+        "dimension": "Security",
+        "priority": 5,
+        "lane": "refactor_0"
+      }
+    ],
+    "strategy": {
+      "fixer_leverage": {
+        "auto_fixable_count": 0,
+        "total_count": 127,
+        "coverage": 0.0,
+        "impact_ratio": 0.0,
+        "recommendation": "none"
+      },
+      "lanes": {
+        "refactor_0": {
+          "actions": [
+            2,
+            4,
+            5
+          ],
+          "file_count": 12,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "refactor_1": {
+          "actions": [
+            3
+          ],
+          "file_count": 1,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "test_coverage": {
+          "actions": [
+            1
+          ],
+          "file_count": 12,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        }
+      },
+      "can_parallelize": true,
+      "hint": "3 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 29 issue(s) \u2014 `desloppify show review --status open`."
+    },
+    "tools": {
+      "fixers": [
+        {
+          "name": "dead-useeffect",
+          "detector": "smells",
+          "open_count": 18,
+          "command": "desloppify autofix dead-useeffect --dry-run"
+        },
+        {
+          "name": "empty-if-chain",
+          "detector": "smells",
+          "open_count": 18,
+          "command": "desloppify autofix empty-if-chain --dry-run"
+        }
+      ],
+      "move": {
+        "available": true,
+        "relevant": false,
+        "reason": null,
+        "usage": "desloppify move <source> <dest> [--dry-run]"
+      },
+      "plan": {
+        "command": "desloppify plan",
+        "description": "Generate prioritized markdown cleanup plan"
+      },
+      "badge": {
+        "generated": true,
+        "in_readme": false,
+        "path": "scorecard.png",
+        "recommendation": "Add to README: <img src=\"scorecard.png\" width=\"100%\">"
+      }
+    },
+    "debt": {
+      "overall_gap": 0.0,
+      "wontfix_count": 0,
+      "worst_dimension": null,
+      "worst_gap": 0.0,
+      "trend": "stable"
+    },
+    "milestone": null,
+    "primary_action": {
+      "command": "desloppify show test_coverage --status open",
+      "description": "12 test_coverage work items \u2014 add tests for untested production modules \u2014 prioritize by import count"
+    },
+    "why_now": "3 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 29 issue(s) \u2014 `desloppify show review --status open`.",
+    "verification_step": {
+      "command": "desloppify scan",
+      "reason": "revalidate after changes"
+    },
+    "risk_flags": [],
+    "strict_target": {
+      "target": 95.0,
+      "current": 72.6,
+      "gap": 22.4,
+      "state": "below",
+      "warning": null
+    },
+    "reminders": [
+      {
+        "type": "review_issues_pending",
+        "message": "29 review work item(s) need investigation. Run `desloppify show review --status open` to see the work queue.",
+        "command": "desloppify show review --status open",
+        "priority": 1,
+        "severity": "high"
+      }
+    ],
+    "reminder_history": {
+      "zone_classification": 3,
+      "report_scores": 3,
+      "review_issues_pending": 3,
+      "stagnant_nudge": 5,
+      "feedback_nudge": 2
+    }
+  },
+  "config": {
+    "target_strict_score": 95,
+    "review_max_age_days": 30,
+    "review_batch_max_files": 80,
+    "holistic_max_age_days": 30,
+    "generate_scorecard": true,
+    "badge_path": "scorecard.png",
+    "exclude": [],
+    "ignore": [],
+    "ignore_metadata": {},
+    "zone_overrides": {},
+    "review_dimensions": [],
+    "large_files_threshold": 0,
+    "props_threshold": 0,
+    "issue_noise_budget": 10,
+    "issue_noise_global_budget": 0,
+    "execution_log_max_entries": 10000,
+    "needs_rescan": false,
+    "languages": {},
+    "commit_tracking_enabled": true,
+    "commit_pr": 0,
+    "commit_default_branch": "",
+    "commit_message_template": "desloppify: {status} {count} issue(s) \u2014 {summary}",
+    "trust_plugins": false
+  }
+}

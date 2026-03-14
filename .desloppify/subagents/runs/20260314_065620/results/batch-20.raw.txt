@@ -1,0 +1,139 @@
+{
+  "batch": "type_safety",
+  "batch_index": 20,
+  "assessments": {
+    "type_safety": 65.0
+  },
+  "dimension_notes": {
+    "type_safety": {
+      "evidence": [
+        "scripts/fees.ts line 63: positions.map((pos: any, i: number) => ...) uses explicit any for API response elements",
+        "scripts/token-info.ts line 84: tokens.map((t: any) => ...) uses explicit any for token feed elements",
+        "scripts/analyze.ts line 64: analysis typed as Record<string, unknown> loses all structure",
+        "No return type annotations on any script main() functions or helper functions across the codebase",
+        "scripts/analyze.ts safeFetch has no return type annotation, returns unknown | null implicitly",
+        "token-launcher bags-client.ts prepareLaunch has no return type annotation despite returning a complex object",
+        "trading-bot bags-client.ts swap function has no return type annotation despite three different return shapes",
+        "LaunchConfig interface in token-launcher is well-typed with clear required/optional fields",
+        "fee-sharing-app bags-client.ts createFeeShareConfig has properly typed parameters (string, string, string[], number[])"
+      ],
+      "impact_scope": "codebase",
+      "fix_scope": "multi_file_refactor",
+      "confidence": "high"
+    }
+  },
+  "dimension_judgment": {
+    "type_safety": {
+      "dimension_character": "The codebase has a split personality on type safety. Template parameters are generally well-typed (LaunchConfig interface, explicit parameter types on createFeeShareConfig and swap), but return types are almost universally missing. Scripts use explicit 'any' for API response data and Record<string, unknown> for assembled output objects. A developer consuming these functions cannot know what they return without reading the implementation.",
+      "score_rationale": "Missing return types on public functions is a codebase-wide pattern affecting all 13 files. Two scripts use explicit 'any' for API data without defining response types. The LaunchConfig interface and parameter typing are bright spots, but the overall picture is that type annotations do not reliably document runtime behavior. This anchors around 65 for significant type safety gaps that would force a developer to verify behavior independently."
+    }
+  },
+  "issues": [
+    {
+      "dimension": "type_safety",
+      "identifier": "missing_return_types_scripts",
+      "summary": "No script function has a return type annotation",
+      "related_files": [
+        "scripts/analyze.ts",
+        "scripts/fees.ts",
+        "scripts/pools.ts",
+        "scripts/quote.ts",
+        "scripts/setup.ts",
+        "scripts/social-lookup.ts",
+        "scripts/token-info.ts"
+      ],
+      "evidence": [
+        "loadConfig() in all scripts: no return type (returns parsed JSON as any)",
+        "main() in all scripts: no return type (returns Promise<void> implicitly)",
+        "safeFetch() in analyze.ts: no return type (returns unknown | null)",
+        "parseArgs() in pools.ts and token-info.ts: no return type (returns Record<string, string | boolean>)"
+      ],
+      "suggestion": "Add explicit return types to at least loadConfig (: { apiKey: string; defaultWallet?: string }), safeFetch (: Promise<unknown>), and parseArgs functions. Define a BagsConfig interface for loadConfig's return type.",
+      "confidence": "high",
+      "impact_scope": "subsystem",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "type_safety",
+      "identifier": "explicit_any_api_responses",
+      "summary": "Scripts use explicit 'any' for API response data without defining types",
+      "related_files": [
+        "scripts/fees.ts",
+        "scripts/token-info.ts"
+      ],
+      "evidence": [
+        "fees.ts line 63: (pos: any, i: number) in positions.map callback",
+        "token-info.ts line 84: (t: any) in tokens.map callback"
+      ],
+      "suggestion": "Define lightweight interfaces for the API response shapes used in these scripts (e.g., interface ClaimablePosition { tokenMint: string; type: string; claimableLamports: string; } and interface TokenFeedItem { name: string; symbol: string; tokenMint: string; ... }). These replace 'any' with meaningful types.",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "type_safety",
+      "identifier": "missing_return_types_templates",
+      "summary": "Template public functions lack return type annotations",
+      "related_files": [
+        "templates/fee-sharing-app/src/bags-client.ts",
+        "templates/token-launcher/src/bags-client.ts",
+        "templates/trading-bot/src/bags-client.ts"
+      ],
+      "evidence": [
+        "prepareLaunch in token-launcher: returns a complex object with tokenMint, metadata, feeShareAuthority, configKey, transactions but no return type",
+        "swap in trading-bot: returns three different shapes ({ quote, executed: false }, { quote, executed: false, error }, { quote, executed: true, bundleId }) but no return type or discriminated union",
+        "getRecentLaunches in trading-bot: returns data.response or empty array with no type annotation"
+      ],
+      "suggestion": "Add return types to all exported functions. For swap(), define a discriminated union type (SwapResult = SwapQuoteOnly | SwapSimulationFailed | SwapExecuted) to make the three return shapes explicit. For prepareLaunch(), define a LaunchResult interface.",
+      "confidence": "high",
+      "impact_scope": "subsystem",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "type_safety",
+      "identifier": "analyze_record_unknown",
+      "summary": "analyze.ts uses Record<string, unknown> for the analysis result object",
+      "related_files": [
+        "scripts/analyze.ts"
+      ],
+      "evidence": [
+        "Line 64: const analysis: Record<string, unknown> = { ... } throws away all type information for the assembled output",
+        "Line 92: analysis.feeAnalysis = { ... } adds a property dynamically, which Record<string, unknown> allows but obscures the structure"
+      ],
+      "suggestion": "Define an AnalysisResult interface with explicit fields (tokenMint, lifetimeFees, creators, claimStats, pool, feeAnalysis?) to replace Record<string, unknown>.",
+      "confidence": "high",
+      "impact_scope": "local",
+      "fix_scope": "single_edit"
+    }
+  ],
+  "retrospective": {
+    "root_causes": [
+      "API response types from the Bags SDK are not narrowed or re-exported at the client boundary, so scripts and templates inherit opaque types",
+      "Scripts were likely generated without type-safety discipline, relying on runtime behavior rather than compile-time contracts"
+    ]
+  },
+  "context_updates": {
+    "type_safety": {
+      "add": [
+        {
+          "header": "LaunchConfig interface is well-defined",
+          "description": "The token-launcher template defines a clean LaunchConfig interface with appropriate required and optional fields. This is the strongest type safety in the codebase and serves as a good model.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Parameter types are consistently specified",
+          "description": "Function parameters across both scripts and templates are properly typed (string, number[], etc.). The type safety gap is primarily in return types, not input types.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Return types missing codebase-wide",
+          "description": "No function in the codebase has an explicit return type annotation. Return types are inferred by TypeScript but not documented in the source, making it impossible to understand function contracts from signatures alone.",
+          "settled": true,
+          "positive": false
+        }
+      ]
+    }
+  }
+}

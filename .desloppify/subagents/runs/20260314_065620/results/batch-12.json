@@ -1,0 +1,70 @@
+{
+  "batch": "authorization_consistency",
+  "batch_index": 12,
+  "assessments": {
+    "authorization_consistency": 85.5
+  },
+  "dimension_notes": {
+    "authorization_consistency": {
+      "evidence": [
+        "All scripts consistently use loadConfig() to read the API key from ~/.bags-dev-kit/config.json and pass it as x-api-key header",
+        "All template bags-client.ts files consistently check process.env.BAGS_API_KEY at module scope and throw if missing",
+        "setup.ts correctly sets config directory permissions to 0o700 and file permissions to 0o600, protecting the API key at rest",
+        "trading-bot bags-client.ts validates both BAGS_API_KEY and SOLANA_PRIVATE_KEY environment variables at module scope",
+        "No routes/endpoints exist in this codebase; it is a dev kit with scripts and templates, so route-level auth patterns do not apply"
+      ],
+      "impact_scope": "codebase",
+      "fix_scope": "single_edit",
+      "confidence": "high",
+      "issues_preventing_higher_score": "The API key is passed via non-null assertion (process.env.BAGS_API_KEY!) in raw-fetch fallback paths within template bags-client files, bypassing the module-scope validation. Additionally, scripts expose the raw API key in fetch headers without any abstraction that could be swapped for a more secure credential source."
+    }
+  },
+  "dimension_judgment": {
+    "authorization_consistency": {
+      "dimension_character": "Authorization patterns are applied consistently and uniformly across the codebase. All scripts use the same loadConfig() pattern, all templates validate environment variables at module scope before use, and the setup script applies correct filesystem permissions. The codebase has a simple, predictable auth model (API key in header) that a developer can trust.",
+      "score_rationale": "A developer can trust that auth is uniformly applied. The consistent loadConfig pattern in scripts and env-var validation in templates demonstrate intentional, reliable auth handling. Minor friction exists in the non-null assertion usage in raw-fetch fallbacks, but this is cosmetic given the module-scope guard. Score reflects mostly consistent with limited, documented exceptions."
+    }
+  },
+  "issues": [
+    {
+      "dimension": "authorization_consistency",
+      "identifier": "non_null_assertion_bypasses_guard",
+      "summary": "Raw fetch paths use process.env.BAGS_API_KEY! bypassing the module-scope check",
+      "related_files": ["templates/fee-sharing-app/src/bags-client.ts", "templates/trading-bot/src/bags-client.ts"],
+      "evidence": ["fee-sharing-app/bags-client.ts line 81: process.env.BAGS_API_KEY! in socialLookup raw fetch", "trading-bot/bags-client.ts line 87: process.env.BAGS_API_KEY! in getRecentLaunches raw fetch"],
+      "suggestion": "Extract the validated API key into a module-scope constant (e.g., const API_KEY = process.env.BAGS_API_KEY) after the guard check, and reference that constant in raw fetch calls instead of re-reading process.env with a non-null assertion.",
+      "confidence": "medium",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    }
+  ],
+  "retrospective": {
+    "root_causes": ["Raw fetch fallback paths were added ad-hoc for endpoints not covered by the SDK, without reusing the validated credential"],
+    "likely_symptoms": [],
+    "possible_false_positives": []
+  },
+  "context_updates": {
+    "authorization_consistency": {
+      "add": [
+        {
+          "header": "Consistent loadConfig pattern in scripts",
+          "description": "All 7 scripts use the identical loadConfig() function to read API credentials from ~/.bags-dev-kit/config.json, providing a single predictable auth pattern for CLI tools.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Module-scope env var validation in templates",
+          "description": "All 3 template bags-client.ts files validate required env vars at module scope with throw, failing fast before any API call can be made without credentials.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Secure file permissions on config",
+          "description": "setup.ts sets 0o700 on the config directory and 0o600 on the config file, preventing other users from reading the API key.",
+          "settled": true,
+          "positive": true
+        }
+      ]
+    }
+  }
+}

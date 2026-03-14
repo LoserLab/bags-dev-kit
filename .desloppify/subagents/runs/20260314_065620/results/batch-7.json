@@ -1,0 +1,77 @@
+{
+  "batch": "dependency_health",
+  "batch_index": 7,
+  "assessments": {
+    "dependency_health": 90.0
+  },
+  "dimension_notes": {
+    "dependency_health": {
+      "evidence": [
+        "Each template has a focused dependency set: @bagsfm/bags-sdk as core, @solana/web3.js for blockchain operations, and framework-specific deps (next, react for web apps; bs58 for the trading bot).",
+        "No duplicate libraries for the same purpose across any template. All templates use the native fetch API rather than pulling in axios or similar.",
+        "The trading-bot template correctly adds bs58 for base58 encoding/decoding of Solana transactions, which is a necessary dependency for its use case.",
+        "No circular dependency cycles visible in the import graph. Each template is self-contained with no cross-template imports.",
+        "All three templates pin @bagsfm/bags-sdk to ^1.3.1, ensuring version consistency across templates.",
+        "Scripts directory has no package.json at all, relying on global tsx availability, which is appropriate for CLI scripts invoked via npx."
+      ],
+      "impact_scope": "codebase",
+      "fix_scope": "single_edit",
+      "confidence": "high",
+      "issues_preventing_higher_score": "The fee-sharing-app and token-launcher templates include @privy-io/react-auth as a dependency but neither template contains any code that imports or uses Privy. This is a speculative dependency that adds install weight without current value."
+    }
+  },
+  "dimension_judgment": {
+    "dependency_health": {
+      "dimension_character": "The dependency set is lean and purposeful across the codebase. Each template includes only what it needs for its stated purpose, with no duplicate libraries or heavy dependencies pulled in for light use. The only friction is Privy being declared but unused in two templates, which is a minor speculative dependency issue common in starter templates.",
+      "score_rationale": "Dependencies are well-chosen and cohesive, with no conflicts, duplicates, or heavy deps for light use. The unused Privy dependency in two templates is a real but minor issue. This places the codebase firmly in the strong range at 90, reflecting a dependency set a developer can trust with only isolated friction."
+    }
+  },
+  "issues": [
+    {
+      "dimension": "dependency_health",
+      "identifier": "unused_privy_dependency",
+      "summary": "Privy auth dependency declared in fee-sharing-app and token-launcher but never imported in source code",
+      "related_files": [
+        "templates/fee-sharing-app/package.json",
+        "templates/token-launcher/package.json"
+      ],
+      "evidence": [
+        "Both package.json files list \"@privy-io/react-auth\": \"^2.5.0\" in dependencies",
+        "Neither templates/fee-sharing-app/src/bags-client.ts nor templates/fee-sharing-app/src/index.ts import from @privy-io/react-auth",
+        "Neither templates/token-launcher/src/bags-client.ts nor templates/token-launcher/src/index.ts import from @privy-io/react-auth"
+      ],
+      "suggestion": "Remove @privy-io/react-auth from both package.json files. If Privy integration is intended for users to add themselves, document it in a comment in the template's index.ts or in the .env.example instead of pre-installing the dependency.",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    }
+  ],
+  "retrospective": {
+    "root_causes": ["Template was scaffolded with all anticipated dependencies rather than only those used by the starter code"],
+    "likely_symptoms": [],
+    "possible_false_positives": []
+  },
+  "context_updates": {
+    "dependency_health": {
+      "add": [
+        {
+          "header": "Lean purposeful dependency sets per template",
+          "description": "Each template includes only the dependencies it actively uses: SDK, web3.js, and framework deps. No duplicate libraries or heavy deps for light use. This makes the templates fast to install and easy to audit.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Consistent SDK version pinning across templates",
+          "description": "All three templates pin @bagsfm/bags-sdk to the same ^1.3.1 range, preventing version drift between templates that developers might use together as reference.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Scripts have no package.json",
+          "description": "The scripts/ directory contains standalone .ts files run via npx tsx. They have no dedicated package.json, relying on global tsx availability. This is a deliberate design choice for CLI scripts that avoids dependency management overhead.",
+          "settled": true
+        }
+      ]
+    }
+  }
+}

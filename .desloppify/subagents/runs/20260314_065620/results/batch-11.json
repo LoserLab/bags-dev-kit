@@ -1,0 +1,92 @@
+{
+  "batch": "api_surface_coherence",
+  "batch_index": 11,
+  "assessments": {
+    "api_surface_coherence": 72.0
+  },
+  "dimension_notes": {
+    "api_surface_coherence": {
+      "evidence": [
+        "Scripts use raw fetch with manual response parsing while template bags-client.ts files use the @bagsfm/bags-sdk, creating two different API interaction patterns",
+        "fee-sharing-app/bags-client.ts exports getQuote(inputMint, outputMint, amount) taking amount as string, while scripts/quote.ts computes amount internally from float input with hardcoded decimal assumptions",
+        "fee-sharing-app/bags-client.ts socialLookup falls back to raw fetch because the endpoint is not in the SDK, mixing SDK and raw fetch in the same module",
+        "scripts/ modules have inconsistent error handling at the API surface: analyze.ts uses safeFetch returning null, while fees.ts, pools.ts, quote.ts check data.success inline with different error message formats",
+        "token-launcher/bags-client.ts prepareLaunch takes a config object (LaunchConfig), while fee-sharing-app/bags-client.ts createFeeShareConfig takes 4 positional parameters for a similar domain operation",
+        "trading-bot/bags-client.ts swap() mixes quote-fetching and execution in one function based on an execute boolean flag, overloading the interface"
+      ],
+      "impact_scope": "subsystem",
+      "fix_scope": "multi_file_refactor",
+      "confidence": "high"
+    }
+  },
+  "dimension_judgment": {
+    "api_surface_coherence": {
+      "dimension_character": "The API surface is split between two fundamentally different integration patterns: scripts use raw fetch with manual JSON parsing, while templates use the SDK client. Within templates, the fee-sharing-app uses positional parameters for createFeeShareConfig while the token-launcher uses a config object (LaunchConfig) for a similar domain operation. The trading-bot overloads swap() with a boolean toggle to control execution, mixing concerns in one function.",
+      "score_rationale": "A developer would encounter recurring irregularities when moving between modules: different parameter styles (positional vs. config object), mixed SDK/raw-fetch in the same module, and an overloaded swap function. These inconsistencies push the score below 80 (solid but uneven). The scripts having a different pattern from templates is somewhat acceptable as they serve different purposes, but the within-template inconsistencies are harder to justify."
+    }
+  },
+  "issues": [
+    {
+      "dimension": "api_surface_coherence",
+      "identifier": "mixed_sdk_raw_fetch_same_module",
+      "summary": "fee-sharing-app bags-client mixes SDK calls with raw fetch for socialLookup",
+      "related_files": ["templates/fee-sharing-app/src/bags-client.ts"],
+      "evidence": ["Lines 74-86: socialLookup uses raw fetch with hardcoded URL while all other functions in the same module use the bags SDK client"],
+      "suggestion": "Either wrap socialLookup in a comment explaining this is intentional because the endpoint is not in the SDK, or create a raw-fetch helper that mirrors the SDK error contract (throw on failure) so the pattern is explicit rather than ad-hoc.",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "api_surface_coherence",
+      "identifier": "inconsistent_parameter_style_across_templates",
+      "summary": "createFeeShareConfig uses 4 positional params while prepareLaunch uses a config object for similar operations",
+      "related_files": ["templates/fee-sharing-app/src/bags-client.ts", "templates/token-launcher/src/bags-client.ts"],
+      "evidence": ["fee-sharing-app createFeeShareConfig(payer, baseMint, claimers, splits) vs token-launcher prepareLaunch(config: LaunchConfig) for operations in the same domain"],
+      "suggestion": "Align on the config-object pattern: define a FeeShareConfig interface with payer, baseMint, claimers, and splits fields, matching the LaunchConfig pattern used in the token-launcher template.",
+      "confidence": "medium",
+      "impact_scope": "subsystem",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "api_surface_coherence",
+      "identifier": "swap_function_overloaded",
+      "summary": "swap() function overloaded via boolean flag to control quote-only vs execute behavior",
+      "related_files": ["templates/trading-bot/src/bags-client.ts"],
+      "evidence": ["Line 38: execute = false parameter toggles between returning a quote and actually executing the swap, mixing two distinct responsibilities in one function"],
+      "suggestion": "Split into getSwapQuote(inputMint, outputMint, amountLamports) and executeSwap(inputMint, outputMint, amountLamports) so callers get a clear contract for each operation.",
+      "confidence": "medium",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    }
+  ],
+  "retrospective": {
+    "root_causes": ["Templates were built independently without a shared API style guide, leading to organic divergence in parameter conventions and error handling"],
+    "likely_symptoms": [],
+    "possible_false_positives": []
+  },
+  "context_updates": {
+    "api_surface_coherence": {
+      "add": [
+        {
+          "header": "Scripts use consistent raw fetch pattern",
+          "description": "All 7 scripts follow the same structural pattern: loadConfig, build URL, fetch with x-api-key header, check data.success. This consistency within the scripts layer is a positive signal.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Template SDK usage is appropriate",
+          "description": "Templates correctly use @bagsfm/bags-sdk as the primary integration layer rather than raw fetch, which provides typed methods and better developer experience.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Two-layer API pattern divergence",
+          "description": "Scripts use raw fetch (appropriate for standalone CLI tools) while templates use the SDK (appropriate for app code). This is a deliberate layer-appropriate split, not accidental drift.",
+          "settled": true,
+          "positive": false
+        }
+      ]
+    }
+  }
+}

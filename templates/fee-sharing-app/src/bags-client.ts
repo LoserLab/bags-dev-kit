@@ -5,13 +5,19 @@
 
 import { BagsClient } from "@bagsfm/bags-sdk";
 
-if (!process.env.BAGS_API_KEY) {
-  throw new Error("BAGS_API_KEY environment variable is required");
-}
+const API_BASE = "https://public-api-v2.bags.fm/api/v1";
 
-export const bags = new BagsClient({
-  apiKey: process.env.BAGS_API_KEY,
-});
+let _client: BagsClient | null = null;
+
+function getClient(): BagsClient {
+  if (!_client) {
+    if (!process.env.BAGS_API_KEY) {
+      throw new Error("BAGS_API_KEY environment variable is required");
+    }
+    _client = new BagsClient({ apiKey: process.env.BAGS_API_KEY });
+  }
+  return _client;
+}
 
 /**
  * Create a fee share configuration for a new token.
@@ -21,12 +27,12 @@ export const bags = new BagsClient({
  * @param claimers - Array of wallet addresses that will earn fees
  * @param splits - Array of basis points (must total 10,000)
  */
-export async function createFeeShareConfig(
+export function createFeeShareConfig(
   payer: string,
   baseMint: string,
   claimers: string[],
   splits: number[]
-) {
+): ReturnType<BagsClient["config"]["createBagsFeeShareConfig"]> {
   if (claimers.length !== splits.length) {
     throw new Error("Claimers and splits arrays must be the same length");
   }
@@ -34,7 +40,7 @@ export async function createFeeShareConfig(
     throw new Error("Splits must total exactly 10,000 basis points");
   }
 
-  return bags.config.createBagsFeeShareConfig({
+  return getClient().config.createBagsFeeShareConfig({
     payer,
     baseMint,
     claimersArray: claimers,
@@ -43,44 +49,29 @@ export async function createFeeShareConfig(
 }
 
 /**
- * Get a swap quote.
- */
-export async function getQuote(
-  inputMint: string,
-  outputMint: string,
-  amount: string
-) {
-  return bags.trade.getQuote({ inputMint, outputMint, amount });
-}
-
-/**
- * Get all claimable fee positions for a wallet.
- */
-export async function getClaimablePositions(wallet: string) {
-  return bags.fee.getAllClaimablePositions(wallet);
-}
-
-/**
- * Get lifetime fees for a token.
- */
-export async function getLifetimeFees(tokenMint: string) {
-  return bags.state.getTokenLifetimeFees(tokenMint);
-}
-
-/**
  * Look up a wallet address by social media handle.
- * Uses raw fetch since this endpoint is not in the SDK.
+ * Uses raw fetch because this endpoint is not covered by the SDK.
  */
-export async function socialLookup(provider: string, username: string) {
+export async function socialLookup(provider: string, username: string): Promise<unknown> {
+  if (!process.env.BAGS_API_KEY) {
+    throw new Error("BAGS_API_KEY environment variable is required");
+  }
   const params = new URLSearchParams({
     username: username.replace(/^@/, ""),
     provider: provider.toLowerCase(),
   });
   const res = await fetch(
-    `https://public-api-v2.bags.fm/api/v1/token-launch/fee-share/wallet/v2?${params}`,
-    { headers: { "x-api-key": process.env.BAGS_API_KEY! } }
+    `${API_BASE}/token-launch/fee-share/wallet/v2?${params}`,
+    { headers: { "x-api-key": process.env.BAGS_API_KEY } }
   );
+  if (!res.ok) throw new Error(`Social lookup failed (${res.status})`);
   const data = await res.json();
   if (!data.success) throw new Error(data.error || "Social lookup failed");
   return data.response;
 }
+
+/**
+ * Access the Bags SDK client directly for operations not wrapped above.
+ * Use bags.trade.getQuote(), bags.fee.getAllClaimablePositions(), etc.
+ */
+export { getClient as getBagsClient };

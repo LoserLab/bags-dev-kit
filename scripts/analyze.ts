@@ -8,42 +8,19 @@
  *   npx tsx analyze.ts <token-mint>
  */
 
-import { readFileSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
+import { loadConfig, apiFetch } from "./shared";
 
-const API_BASE = "https://public-api-v2.bags.fm/api/v1";
-const CONFIG_PATH = join(homedir(), ".bags-dev-kit", "config.json");
-
-function loadConfig() {
-  try {
-    return JSON.parse(readFileSync(CONFIG_PATH, "utf-8"));
-  } catch {
-    console.error("Config not found. Run /bags-dev-kit:setup first.");
-    process.exit(1);
-  }
+interface PoolInfo {
+  dbcConfigKey?: string;
+  dbcPoolKey?: string;
+  dammV2PoolKey?: string;
 }
 
-async function safeFetch(url: string, headers: Record<string, string>) {
-  try {
-    const res = await fetch(url, { headers });
-    if (!res.ok) {
-      console.error(`API error (${res.status}) for ${url.split("?")[0]}`);
-      return null;
-    }
-    const data = await res.json();
-    if (!data.success) {
-      console.error(`API returned error for ${url.split("?")[0]}: ${data.error || "unknown"}`);
-      return null;
-    }
-    return data.response;
-  } catch (err) {
-    console.error(`Fetch failed for ${url.split("?")[0]}: ${err instanceof Error ? err.message : "unknown"}`);
-    return null;
-  }
+interface ClaimStat {
+  claimedLamports?: string;
 }
 
-async function main() {
+async function main(): Promise<void> {
   const tokenMint = process.argv[2];
   if (!tokenMint) {
     console.error("Usage: npx tsx analyze.ts <token-mint>");
@@ -51,21 +28,19 @@ async function main() {
   }
 
   const config = loadConfig();
-  const headers = { "x-api-key": config.apiKey };
 
-  // Fetch everything in parallel
   const [creators, lifetimeFees, claimStats, pool] = await Promise.all([
-    safeFetch(`${API_BASE}/token-launch/creator/v3?tokenMint=${tokenMint}`, headers),
-    safeFetch(`${API_BASE}/token-launch/lifetime-fees?tokenMint=${tokenMint}`, headers),
-    safeFetch(`${API_BASE}/token-launch/claim-stats?tokenMint=${tokenMint}`, headers),
-    safeFetch(`${API_BASE}/solana/bags/pools/token-mint?tokenMint=${tokenMint}`, headers),
+    apiFetch(`/token-launch/creator/v3?tokenMint=${tokenMint}`, config.apiKey),
+    apiFetch<string>(`/token-launch/lifetime-fees?tokenMint=${tokenMint}`, config.apiKey),
+    apiFetch<ClaimStat[]>(`/token-launch/claim-stats?tokenMint=${tokenMint}`, config.apiKey),
+    apiFetch<PoolInfo>(`/solana/bags/pools/token-mint?tokenMint=${tokenMint}`, config.apiKey),
   ]);
 
   const analysis: Record<string, unknown> = {
     tokenMint,
     lifetimeFees: lifetimeFees ? {
       lamports: lifetimeFees,
-      sol: Number(BigInt(lifetimeFees as string)) / 1e9,
+      sol: Number(BigInt(lifetimeFees)) / 1e9,
     } : null,
     creators,
     claimStats,
@@ -77,9 +52,8 @@ async function main() {
     } : null,
   };
 
-  // Calculate fee efficiency if we have claim stats
   if (claimStats && lifetimeFees) {
-    const totalFees = BigInt(lifetimeFees as string);
+    const totalFees = BigInt(lifetimeFees);
     let totalClaimed = BigInt(0);
 
     if (Array.isArray(claimStats)) {

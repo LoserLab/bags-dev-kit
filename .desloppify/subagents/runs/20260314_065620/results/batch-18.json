@@ -1,0 +1,105 @@
+{
+  "batch": "contract_coherence",
+  "batch_index": 18,
+  "assessments": {
+    "contract_coherence": 74.0
+  },
+  "dimension_notes": {
+    "contract_coherence": {
+      "evidence": [
+        "scripts/analyze.ts safeFetch returns typed as implicit any (no return type annotation) but actually returns response data | null, which is a contract gap for callers",
+        "fee-sharing-app bags-client.ts getQuote, getClaimablePositions, getLifetimeFees are documented as specific operations but their return types are fully delegated to the SDK with no narrowing, so the contract is only as good as the SDK's types",
+        "token-launcher bags-client.ts prepareLaunch documents a 3-step flow but returns an object with transactions that may or may not contain feeConfig.transactions (line 82: ...(feeConfig.transactions || [])), making the return shape uncertain",
+        "scripts/quote.ts hardcodes decimals=6 for non-SOL tokens (line 53) but the comment on line 51-52 acknowledges this is wrong for tokens with different decimals, creating a documented contract violation",
+        "fee-sharing-app socialLookup uses process.env.BAGS_API_KEY! with non-null assertion (line 81) despite the module-level guard already ensuring it exists"
+      ],
+      "impact_scope": "subsystem",
+      "fix_scope": "multi_file_refactor",
+      "confidence": "high"
+    }
+  },
+  "dimension_judgment": {
+    "contract_coherence": {
+      "dimension_character": "Function contracts are generally honest in intent but imprecise in specification. The scripts communicate their purpose clearly through docstrings and usage comments, but return types are often implicit or overly broad. The template SDK wrappers delegate contract responsibility to the underlying SDK without narrowing or documenting what the caller should expect. The quote.ts decimal assumption is explicitly documented as inaccurate, which is honest but still creates a contract violation at runtime.",
+      "score_rationale": "The codebase is mostly honest about what functions do, but there are recurring gaps where return types are unspecified, error contracts are implicit, and assumptions (like token decimals) are documented as wrong but not fixed. A developer would need to trace through SDK calls to understand return shapes. This is not severely misleading but creates enough friction to anchor around 74."
+    }
+  },
+  "issues": [
+    {
+      "dimension": "contract_coherence",
+      "identifier": "safefetch_untyped_return",
+      "summary": "analyze.ts safeFetch has no return type annotation despite returning data | null",
+      "related_files": [
+        "scripts/analyze.ts"
+      ],
+      "evidence": [
+        "Line 27: async function safeFetch(url: string, headers: Record<string, string>) has no return type",
+        "Function returns data.response (unknown shape) or null on any error path"
+      ],
+      "suggestion": "Add explicit return type: Promise<unknown | null> or a generic Promise<T | null> with runtime validation. At minimum, the null return contract should be visible in the signature.",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "contract_coherence",
+      "identifier": "quote_decimal_assumption",
+      "summary": "quote.ts documents its decimal assumption as inaccurate but uses it anyway",
+      "related_files": [
+        "scripts/quote.ts"
+      ],
+      "evidence": [
+        "Lines 51-53: comment says 'For accurate conversion, check the token's actual decimals on-chain' but then hardcodes const decimals = inputMint === WSOL ? 9 : 6",
+        "This silently produces wrong amounts for tokens with non-6 decimal places"
+      ],
+      "suggestion": "Either fetch the token's actual decimals from the API before computing the amount, or make the function accept a decimals parameter and document that callers must provide it. The current code silently miscomputes for non-standard tokens.",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "contract_coherence",
+      "identifier": "prepare_launch_uncertain_transactions",
+      "summary": "prepareLaunch return type does not communicate that transactions array shape varies",
+      "related_files": [
+        "templates/token-launcher/src/bags-client.ts"
+      ],
+      "evidence": [
+        "Line 82: ...(feeConfig.transactions || []) means the transactions array may contain 0 to N fee config transactions plus one launch transaction, but the return type does not distinguish these"
+      ],
+      "suggestion": "Add an explicit return type with a transactions field typed as an array, and document in the docstring that the array contains fee config transactions followed by the launch transaction.",
+      "confidence": "medium",
+      "impact_scope": "local",
+      "fix_scope": "single_edit"
+    }
+  ],
+  "retrospective": {
+    "root_causes": [
+      "SDK wrapper functions inherit the SDK's type opacity without adding contract documentation or type narrowing at the boundary"
+    ]
+  },
+  "context_updates": {
+    "contract_coherence": {
+      "add": [
+        {
+          "header": "Docstrings communicate intent clearly",
+          "description": "All public functions in both scripts and templates have JSDoc comments that accurately describe what the function does. The intent contract is honest even where the type contract is imprecise.",
+          "settled": true,
+          "positive": true
+        },
+        {
+          "header": "Return types delegated to SDK without narrowing",
+          "description": "Template bags-client functions return whatever the SDK returns without adding type annotations or narrowing. Callers must trust the SDK's types or inspect them manually.",
+          "settled": true,
+          "positive": false
+        },
+        {
+          "header": "Validation at function boundaries is correct",
+          "description": "createFeeShareConfig and prepareLaunch both validate their inputs (claimers.length === splits.length, splits sum to 10000) before calling the SDK. These guards are honest and match the documented requirements.",
+          "settled": true,
+          "positive": true
+        }
+      ]
+    }
+  }
+}
