@@ -1,0 +1,50 @@
+# Bags Dev Kit
+
+> Full-stack developer toolkit for building on Bags.fm (Solana). Claude Code skill.
+
+## What This Is
+
+A Claude Code skill that helps developers build apps on Bags.fm. Not an API wrapper. A build system with executable scripts, deep reference docs, project templates, and slash commands.
+
+## Install
+
+```
+claude skill add LoserLab/bags-dev-kit
+```
+
+## Capabilities
+
+- Scaffold Bags apps (fee-sharing, trading bot, token launcher)
+- Query live tokens, pools, fees, swap quotes from the Bags API
+- Launch tokens with fee sharing configuration
+- Analyze token performance and fee economics
+- Look up wallets by Twitter/TikTok/Kick/GitHub handle
+- Deep reference docs on Bags API, fee strategy, security, architecture patterns
+
+## Key Files
+
+- SKILL.md: Main skill definition with routing logic and rules
+- scripts/shared.ts: Shared utilities (config, API client, constants)
+- scripts/quote.ts: Get swap quotes
+- scripts/fees.ts: Check claimable fees
+- scripts/pools.ts: List/search pools
+- scripts/analyze.ts: Token analysis
+- scripts/social-lookup.ts: Wallet lookup by social handle
+- scripts/token-info.ts: Token feed and details
+- references/bags-api.md: Complete API endpoint reference
+- references/fee-economics.md: Fee share strategy guide
+- references/security.md: Security checklist
+- references/architecture-patterns.md: App architecture patterns
+- templates/fee-sharing-app/: Next.js + Bags SDK starter
+- templates/trading-bot/: Node.js + Jito MEV-protected bot
+- templates/token-launcher/: Full launch platform starter
+
+## Requirements
+
+- Claude Code CLI
+- Node.js >= 18
+- Bags API key (free at https://dev.bags.fm)
+
+## Author
+
+Heathen
