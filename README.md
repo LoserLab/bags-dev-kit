@@ -91,7 +91,7 @@ It's like having a Bags expert pair programmer.
 
 Created by [**Heathen**](https://x.com/heathenft)
 
-Built in [Mirra](https://mirra.app)
+Built in [Mirra](https://x.com/mirra)
 
 ## License
 
